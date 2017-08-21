@@ -30,6 +30,9 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
+// blacklist: array of uuid and wmClass (icon application name)
+const blacklist = ["skype","SkypeNotification@chrisss404.gmail.com"];
+
 let settings = null;
 let tray = null;
 let trayIconImplementations = null;
@@ -38,7 +41,6 @@ let trayRemovedId = 0;
 let icons = [];
 let iconsBoxLayout = null;
 let iconsContainer = null;
-let blacklist = ["skype","SkypeNotification@chrisss404.gmail.com"]; // blacklist: array of uuid and wmClass (icon application name)
 
 function init() { }
 
@@ -70,8 +72,13 @@ function onTrayIconAdded(o, icon, role, delay=1000) {
     // loop through the array and hide the extension if extension X is enabled and corresponding application is running
     let wmClass = icon.wm_class ? icon.wm_class.toLowerCase() : '';
     for (let i = 0; i < blacklist.length; i++) {
-        if (ExtensionUtils.extensions[blacklist[i+1]] !== undefined && ExtensionUtils.extensions[blacklist[i+1]].state === 1 && wmClass === blacklist[i])
+        let nextBlacklisted = blacklist[i+1];
+        if (ExtensionUtils.extensions.hasOwnProperty(nextBlacklisted) &&
+            ExtensionUtils.extensions[nextBlacklisted].state === 1 &&
+            wmClass === blacklist[i])
+        {
             return;
+        }
     }
 
     let iconContainer = new St.Button({child: icon, visible: false});
