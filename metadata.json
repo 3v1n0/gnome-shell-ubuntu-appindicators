@@ -1,0 +1,12 @@
+{
+    "name": "Ubuntu AppIndicators",
+    "version": "17.10.1",
+    "description": "Support app indicators and systray in top panel, as in the classic Ubuntu experience. This is based on KStatusNotifierItem/AppIndicator and Top Icons extensions",
+    "uuid": "ubuntu-indicators@ubuntu.com",
+    "settings-schema": "org.gnome.shell.extensions.ubuntu-indicators",
+    "gettext-domain": "Ubuntu-AppIndicators",
+    "shell-version": [
+        "3.24",
+        "3.26"
+    ]
+}
