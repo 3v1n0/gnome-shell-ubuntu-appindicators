@@ -25,10 +25,14 @@ const Main = imports.ui.main;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Clutter = imports.gi.Clutter;
+const Panel = imports.ui.panel;
 const PanelMenu = imports.ui.panelMenu;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
+
+const DEFAULT_TRAY_INDEX = 0
+const DEFAULT_ICON_SPACING = 6;
 
 // blacklist: array of uuid and wmClass (icon application name)
 const blacklist = ["skype","SkypeNotification@chrisss404.gmail.com"];
@@ -53,11 +57,6 @@ function enable() {
     settings.connect('changed::icon-saturation', Lang.bind(this, setSaturation));
     settings.connect('changed::icon-brightness', Lang.bind(this, setBrightnessContrast));
     settings.connect('changed::icon-contrast', Lang.bind(this, setBrightnessContrast));
-    settings.connect('changed::icon-size', Lang.bind(this, setSize));
-    settings.connect('changed::icon-spacing', Lang.bind(this, setSpacing));
-    settings.connect('changed::tray-pos', Lang.bind(this, placeTray));
-    settings.connect('changed::tray-order', Lang.bind(this, placeTray));
-
 }
 
 function disable() {
@@ -97,7 +96,7 @@ function onTrayIconAdded(o, icon, role, delay=1000) {
         iconsContainer.actor.visible = true;
         return GLib.SOURCE_REMOVE;
     }));
-    
+
     iconsBoxLayout.insert_child_at_index(iconContainer, 0);
     setIcon(icon);
     icons.push(icon);
@@ -128,7 +127,7 @@ function moveToTop() {
 
     // Create box layout for icon containers 
     iconsBoxLayout = new St.BoxLayout();
-    setSpacing();
+    iconsBoxLayout.set_style('spacing: ' + DEFAULT_ICON_SPACING + 'px; margin_top: 2px; margin_bottom: 2px;');
 
     // An empty ButtonBox will still display padding,therefore create it without visibility.
     iconsContainer = new PanelMenu.ButtonBox({visible: false});
@@ -198,27 +197,15 @@ function moveToTray() {
 // Settings
 
 function placeTray() {
-
-    let trayPosition = settings.get_string('tray-pos');
     let trayOrder = settings.get_int('tray-order');
-
     let parent = iconsContainer.actor.get_parent();
+    let rightBox = Main.panel._rightBox;
+
     if (parent)
         parent.remove_actor(iconsContainer.actor);
-    
-    if (trayPosition == 'left') {
-        let index = Main.panel._leftBox.get_n_children() - trayOrder;
-        Main.panel._leftBox.insert_child_at_index(iconsContainer.actor, index);
-    }
-    else if (trayPosition == 'center') {
-        let index = Main.panel._centerBox.get_n_children() - trayOrder;
-        Main.panel._centerBox.insert_child_at_index(iconsContainer.actor, index);
-    }
-    else {
-        let index = Main.panel._rightBox.get_n_children() - trayOrder;
-        Main.panel._rightBox.insert_child_at_index(iconsContainer.actor, index);
-    }
 
+    let index = Math.min (DEFAULT_TRAY_INDEX, rightBox.get_n_children() - 1);
+    rightBox.insert_child_at_index(iconsContainer.actor, index);
 }
 
 function setIcon(icon) {
@@ -291,27 +278,17 @@ function setBrightnessContrast(icon) {
 }
 
 function setSize(icon) {
-
-    let iconSize = settings.get_int('icon-size');
     let scaleFactor = St.ThemeContext.get_for_stage(global.stage).scale_factor;
+    let defaultIconSize = Panel.PANEL_ICON_SIZE * scaleFactor;
 
     if (arguments.length == 1) {
-        icon.get_parent().set_size(iconSize * scaleFactor, iconSize * scaleFactor);
-        icon.set_size(iconSize * scaleFactor, iconSize * scaleFactor);
+        icon.get_parent().set_size(defaultIconSize, defaultIconSize);
+        icon.set_size(defaultIconSize, defaultIconSize);
     } else {
-        for (let i = 0; i < icons.length; i++) {
-            let icon = icons[i];
-            icon.get_parent().set_size(iconSize * scaleFactor, iconSize * scaleFactor);
-            icon.set_size(iconSize * scaleFactor, iconSize * scaleFactor);
+        for (let icon of icons) {
+            icon.get_parent().set_size(defaultIconSize, defaultIconSize);
+            icon.set_size(defaultIconSize, defaultIconSize);
         }
     }
-
-}
-
-function setSpacing() {
-
-    let boxLayoutSpacing = settings.get_int('icon-spacing');
-
-    iconsBoxLayout.set_style('spacing: ' + boxLayoutSpacing + 'px; margin_top: 2px; margin_bottom: 2px;');
 
 }

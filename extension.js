@@ -1,3 +1,4 @@
+// -*- mode: js2; indent-tabs-mode: nil; js2-basic-offset: 4 -*-
 /*
  * Copyright (C) 2017 Canonical Ltd
  *

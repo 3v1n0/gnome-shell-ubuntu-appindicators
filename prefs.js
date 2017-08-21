@@ -1,22 +1,5 @@
 // -*- mode: js2; indent-tabs-mode: nil; js2-basic-offset: 4 -*-
 
-// const Gio = imports.gi.Gio;
-// const GLib = imports.gi.GLib;
-// const GObject = imports.gi.GObject;
-// const Gtk = imports.gi.Gtk;
-// const Lang = imports.lang;
-// const Mainloop = imports.mainloop;
-
-
-
-// const Gettext = imports.gettext.domain('TopIcons-Plus');
-// const _ = Gettext.gettext;
-// const N_ = function(e) { return e; }
-
-// const ExtensionUtils = imports.misc.extensionUtils;
-// const Me = ExtensionUtils.getCurrentExtension();
-// const Convenience = Me.imports.convenience;
-
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
@@ -126,74 +109,6 @@ const TopIconsPlusSettings = new GObject.Class({
          }));
         this.attach(label, 0, 4, 1, 1);
         this.attach(widget, 1, 4, 1, 1);
-
-        // Icon size
-        label = new Gtk.Label({
-            label: _('Icon size (min: 0, max: 96)'),
-            hexpand: true,
-            halign: Gtk.Align.START
-        });
-        widget = new Gtk.SpinButton({halign:Gtk.Align.END});
-        widget.set_sensitive(true);
-        widget.set_range(0, 96);
-        widget.set_value(this._settings.get_int('icon-size'));
-        widget.set_increments(1, 2);
-        widget.connect('value-changed', Lang.bind(this, function(w){
-            value = w.get_value_as_int();
-            this._settings.set_int('icon-size', value);
-         }));
-        this.attach(label, 0, 5, 1, 1);
-        this.attach(widget, 1, 5, 1, 1);
-
-        // Icon tray spacing
-        label = new Gtk.Label({
-            label: _('Spacing between icons (min: 0, max: 20)'),
-            hexpand: true,
-            halign: Gtk.Align.START
-        });
-        widget = new Gtk.SpinButton({halign:Gtk.Align.END});
-        widget.set_sensitive(true);
-        widget.set_range(0, 20);
-        widget.set_value(this._settings.get_int('icon-spacing'));
-        widget.set_increments(1, 2);
-        widget.connect('value-changed', Lang.bind(this, function(w){
-            value = w.get_value_as_int();
-            this._settings.set_int('icon-spacing', value);
-         }));
-        this.attach(label, 0, 6, 1, 1);
-        this.attach(widget, 1, 6, 1, 1);
-
-        // Tray position in panel
-        label = new Gtk.Label({
-            label: _('Tray horizontal alignment'),
-            hexpand: true,
-            halign: Gtk.Align.START
-        });
-        widget = new Gtk.ComboBoxText();
-        widget.append('center', "Center");
-        widget.append('left', "Left");
-        widget.append('right', "Right");
-        this._settings.bind('tray-pos', widget, 'active-id', Gio.SettingsBindFlags.DEFAULT);
-        this.attach(label, 0, 7, 1, 1);
-        this.attach(widget, 1, 7, 1, 1);
-
-        // Tray order in panel
-        label = new Gtk.Label({
-            label: _('Tray offset'),
-            hexpand: true,
-            halign: Gtk.Align.START
-        });
-        widget = new Gtk.SpinButton({halign:Gtk.Align.END});
-        widget.set_sensitive(true);
-        widget.set_range(0, 20);
-        widget.set_value(this._settings.get_int('tray-order'));
-        widget.set_increments(1, 2);
-        widget.connect('value-changed', Lang.bind(this, function(w){
-            value = w.get_value_as_int();
-            this._settings.set_int('tray-order', value);
-        }));
-        this.attach(label, 0, 8, 1, 1);
-        this.attach(widget, 1, 8, 1, 1);
 
         //this._changedPermitted = true;
     },
