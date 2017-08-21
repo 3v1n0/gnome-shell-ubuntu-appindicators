@@ -49,7 +49,6 @@ let iconsContainer = null;
 function init() { }
 
 function enable() {
-
     GLib.idle_add(GLib.PRIORITY_LOW, moveToTop);
     tray = Main.legacyTray;
     settings = Convenience.getSettings();
@@ -60,10 +59,8 @@ function enable() {
 }
 
 function disable() {
-
     moveToTray();
     settings.run_dispose();
-
 }
 
 function onTrayIconAdded(o, icon, role, delay=1000) {
@@ -103,7 +100,6 @@ function onTrayIconAdded(o, icon, role, delay=1000) {
 }
 
 function onTrayIconRemoved(o, icon) {
-
     let parent = icon.get_parent();
     if (parent)
          parent.destroy();
@@ -112,11 +108,9 @@ function onTrayIconRemoved(o, icon) {
 
     if (icons.length === 0)
         iconsContainer.actor.visible = false;
-    
 }
 
 function moveToTop() {
-
     // Replace signal handlers
     if (tray._trayIconAddedId)
         tray._trayManager.disconnect(tray._trayIconAddedId);
@@ -125,7 +119,7 @@ function moveToTop() {
     trayAddedId = tray._trayManager.connect('tray-icon-added', onTrayIconAdded);
     trayRemovedId = tray._trayManager.connect('tray-icon-removed', onTrayIconRemoved);
 
-    // Create box layout for icon containers 
+    // Create box layout for icon containers
     iconsBoxLayout = new St.BoxLayout();
     iconsBoxLayout.set_style('spacing: ' + DEFAULT_ICON_SPACING + 'px; margin_top: 2px; margin_bottom: 2px;');
 
@@ -148,7 +142,6 @@ function moveToTop() {
 }
 
 function moveToTray() {
-
     // Replace signal handlers
     if (trayAddedId) {
         tray._trayManager.disconnect(trayAddedId);
@@ -197,7 +190,6 @@ function moveToTray() {
 // Settings
 
 function placeTray() {
-    let trayOrder = settings.get_int('tray-order');
     let parent = iconsContainer.actor.get_parent();
     let rightBox = Main.panel._rightBox;
 
@@ -209,17 +201,14 @@ function placeTray() {
 }
 
 function setIcon(icon) {
-
     icon.reactive = true;
     setSize(icon);
     setOpacity(icon);
     setSaturation(icon);
     setBrightnessContrast(icon);
-
 }
 
 function setOpacity(icon) {
-
     let opacityValue = settings.get_int('icon-opacity');
 
     if (arguments.length == 1) {
@@ -237,7 +226,6 @@ function setOpacity(icon) {
 }
 
 function setSaturation(icon) {
-
     let desaturationValue =  settings.get_double('icon-saturation');
 
     if (arguments.length == 1) {
@@ -245,7 +233,7 @@ function setSaturation(icon) {
         sat_effect.set_factor(desaturationValue);
         sat_effect.set_factor(desaturationValue);
         icon.add_effect_with_name('desaturate', sat_effect);
-    } else {    
+    } else {
         for (let i = 0; i < icons.length; i++) {
              let icon = icons[i];
              let effect = icon.get_effect('desaturate');
@@ -257,7 +245,6 @@ function setSaturation(icon) {
 }
 
 function setBrightnessContrast(icon) {
-
     let brightnessValue = settings.get_double('icon-brightness');
     let contrastValue =  settings.get_double('icon-contrast');
 
@@ -274,7 +261,6 @@ function setBrightnessContrast(icon) {
             effect.set_contrast(contrastValue);
         }
     }
-
 }
 
 function setSize(icon) {
